@@ -265,6 +265,15 @@ def get_queue(sonos):
         )
 
 
+def get_sonos_playlists(sonos):
+    """ Show the available sonos playlists """
+    lists = sonos.get_sonos_playlists()
+    print("search_type: %s number_retured: %s update_id: %s total_matches: %d" % (lists.get('search_type'),
+        lists.get('number_retured'), lists.get('update_id'), lists.get('total_matches')))
+
+    for idx, playlist in enumerate(lists.get('item_list'), 1):
+        print("idx: %d, playlist: %s" % (idx, playlist))
+
 def err(message):
     """ print an error message """
     print(message, file=sys.stderr)
@@ -410,6 +419,7 @@ COMMANDS = {
     'previous':   (True, play_previous),
     'current':    (True, get_current_track_info),
     'queue':      (True, get_queue),
+    'sonos_playlists': (True, get_sonos_playlists),
     'volume':     (True, volume),
     'state':      (True, state),
     'exit':       (False, exit_shell),
