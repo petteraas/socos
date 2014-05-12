@@ -17,70 +17,48 @@ class RenderingAdjustments(object):
         """ print an error message """
         print(message, file=sys.stderr)
 
-    def adjust_volume(self, operator):
-        """ Adjust the volume up or down with a factor from 1 to 100 """
-        factor = self.get_adjustment_factor(operator)
+    def volume(self, operator):
+        """ Adjust the volume up or down with a factor from -100 to 100 """
+        value = self.control(operator, self.soco.volume, range(-100, 100))
+        if value:
+            self.soco.volume = value
+        return self.soco.volume
+
+    def bass(self, operator):
+        """ Adjust the bass up or down with a factor from -20 to 20 """
+        value = self.control(operator, self.soco.bass, range(-20, 20))
+        if value:
+            self.soco.bass = value
+        return self.soco.bass
+
+    def treble(self, operator):
+        """ Adjust the treble up or down with a factor from -20 to 20 """
+        value = self.control(operator, self.soco.treble, range(-20, +20))
+        if value:
+            self.soco.treble = value
+        return self.soco.treble
+
+    def control(self, operator, property, range):
+        factor = self.get_factor(operator)
         if not factor:
             return False
 
-        vol = self.soco.volume
-
-        if operator[0] == '+':
-            if (vol + factor) > 100:
-                factor = 1
-            self.soco.volume = (vol + factor)
-            return self.soco.volume
-        elif operator[0] == '-':
-            if (vol - factor) < 0:
-                factor = 1
-            self.soco.volume = (vol - factor)
-            return self.soco.volume
-        else:
-            self.err("Valid operators for volume are + and -")
-
-    def adjust_bass(self, operator):
-        """ Adjust the bass up or down with a factor from -10 to 10 """
-        factor = self.get_adjustment_factor(operator)
-        if not factor:
+        if not operator[0] in ['+','-']:
+            self.err("Valid operators are + and -")
             return False
 
-        bass = self.soco.bass
+        updated_value = self.get_updated_value(int(property), operator[0], factor)
+        if not updated_value in range:
+            factor = 1
+            updated_value = self.get_updated_value(int(property), operator[0], factor)
 
-        if operator[0] == '+':
-            if (bass + factor) > 10:
-                factor = 1
-            self.soco.bass = (bass + factor)
-            return self.soco.bass
-        elif operator[0] == '-':
-            if (bass - factor) < -10:
-                factor = 1
-            self.soco.bass = (bass - factor)
-            return self.soco.bass
-        else:
-            self.err("Valid operators for bass are + and -")
+        return updated_value
 
-    def adjust_treble(self, operator):
-        """ Adjust the treble up or down with a factor from -10 to 10 """
-        factor = self.get_adjustment_factor(operator)
-        if not factor:
-            return False
+    @staticmethod
+    def get_updated_value(property, operator, factor):
+        return eval("%d %s %d" % (property, operator, factor))
 
-        treble = self.soco.treble
-
-        if operator[0] == '+':
-            if (treble + factor) > 10:
-                factor = 1
-            self.soco.treble = (treble + factor)
-            return self.soco.treble
-        elif operator[0] == '-':
-            if (treble - factor) < -10:
-                factor = 1
-            self.soco.treble = (treble - factor)
-            return self.soco.treble
-        else:
-            self.err("Valid operators for treble are + and -")
-
-    def get_adjustment_factor(self, operator):
+    def get_factor(self, operator):
         """ get the factor to adjust the volume, bass, treble... with """
         factor = 1
         if len(operator) > 1:
