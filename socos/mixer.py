@@ -1,12 +1,12 @@
-""" The RenderingAdjustments class contains all functionality related to
+""" The Mixer class contains all functionality related to
 adjusting value like volume, bass, treble. """
 
 from __future__ import print_function
 import sys
 
 
-class RenderingAdjustments(object):
-    """ The RenderingAdjustments class contains all functionality related to
+class Mixer(object):
+    """ The Mixer class contains all functionality related to
     adjusting value like volume, bass, treble. """
 
     def __init__(self, soco):

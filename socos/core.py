@@ -30,7 +30,7 @@ import soco
 from soco.exceptions import SoCoUPnPException
 
 from .exceptions import SoCoIllegalSeekException
-from .rendering_adjustments import RenderingAdjustments
+from .mixer import Mixer
 
 # current speaker (used only in interactive mode)
 CUR_SPEAKER = None
@@ -256,8 +256,8 @@ def volume(sonos, *args):
     """ Change or show the volume of a device """
     if args:
         operator = args[0].lower()
-        rendering_adjustments = RenderingAdjustments(sonos)
-        rendering_adjustments.adjust_volume(operator)
+        mixer = Mixer(sonos)
+        mixer.adjust_volume(operator)
 
     return str(sonos.volume)
 
@@ -266,8 +266,8 @@ def bass(sonos, *args):
     """ Change or show the bass value of a device """
     if args:
         operator = args[0].lower()
-        rendering_adjustments = RenderingAdjustments(sonos)
-        rendering_adjustments.adjust_bass(operator)
+        mixer = Mixer(sonos)
+        mixer.adjust_bass(operator)
 
     return str(sonos.bass)
 
@@ -276,8 +276,8 @@ def treble(sonos, *args):
     """ Change or show the treble value of a device """
     if args:
         operator = args[0].lower()
-        rendering_adjustments = RenderingAdjustments(sonos)
-        rendering_adjustments.adjust_treble(operator)
+        mixer = Mixer(sonos)
+        mixer.adjust_treble(operator)
 
     return str(sonos.treble)
 
