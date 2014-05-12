@@ -257,7 +257,7 @@ def volume(sonos, *args):
     if args:
         operator = args[0].lower()
         mixer = Mixer(sonos)
-        mixer.adjust_volume(operator)
+        mixer.volume(operator)
 
     return str(sonos.volume)
 
@@ -267,7 +267,7 @@ def bass(sonos, *args):
     if args:
         operator = args[0].lower()
         mixer = Mixer(sonos)
-        mixer.adjust_bass(operator)
+        mixer.bass(operator)
 
     return str(sonos.bass)
 
@@ -277,7 +277,7 @@ def treble(sonos, *args):
     if args:
         operator = args[0].lower()
         mixer = Mixer(sonos)
-        mixer.adjust_treble(operator)
+        mixer.treble(operator)
 
     return str(sonos.treble)
 
