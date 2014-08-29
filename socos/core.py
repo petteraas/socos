@@ -387,7 +387,7 @@ def play_previous(sonos):
 
 def state(sonos):
     """ Get the current state of a device / group """
-    return sonos.get_current_transport_info()['current_transport_state']
+    return get_coordinator(sonos).get_current_transport_info()['current_transport_state']
 
 
 def set_speaker(arg):
