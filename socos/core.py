@@ -379,7 +379,7 @@ def play_next(sonos):
 def play_previous(sonos):
     """ Play the previous track """
     try:
-        sonos.previous()
+        get_coordinator(sonos).previous()
     except SoCoUPnPException:
         raise SoCoIllegalSeekException('No suck track')
     return get_current_track_info(sonos)
