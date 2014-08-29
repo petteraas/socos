@@ -417,6 +417,12 @@ def unset_speaker():
     CUR_SPEAKER = None
 
 
+def get_coordinator(sonos):
+    if sonos.group:
+        return sonos.group.coordinator
+    else:
+        return sonos
+
 def get_help(command=None):
     """ Prints a list of commands with short description """
 
