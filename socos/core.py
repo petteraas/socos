@@ -370,7 +370,7 @@ def remove_index_from_queue(sonos, index):
 def play_next(sonos):
     """ Play the next track """
     try:
-        sonos.next()
+        get_coordinator(sonos).next()
     except SoCoUPnPException:
         raise SoCoIllegalSeekException('No such track')
     return get_current_track_info(sonos)
