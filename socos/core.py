@@ -323,7 +323,7 @@ def play(sonos, *args):
         idx = args[0]
         play_index(sonos, idx)
     else:
-        sonos.play()
+        get_coordinator(sonos).play()
     return get_current_track_info(sonos)
 
 
