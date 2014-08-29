@@ -330,6 +330,8 @@ def play(sonos, *args):
 def play_mode(sonos, *args):
     """ Change or show the play mode of a device
     Accepted modes: NORMAL, SHUFFLE_NOREPEAT, SHUFFLE, REPEAT_ALL """
+    sonos = get_coordinator(sonos)
+
     if not args:
         return sonos.play_mode
 
