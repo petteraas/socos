@@ -196,13 +196,13 @@ def get_current_track_info(sonos):
 
 def get_queue(sonos):
     """ Show the current queue """
-    queue = sonos.get_queue()
+    queue = get_coordinator(sonos).get_queue()
 
     # pylint: disable=invalid-name
     ANSI_BOLD = '\033[1m'
     ANSI_RESET = '\033[0m'
 
-    current = int(sonos.get_current_track_info()['playlist_position'])
+    current = int(get_coordinator(sonos).get_current_track_info()['playlist_position'])
 
     queue_length = len(queue)
     padding = len(str(queue_length))
@@ -233,7 +233,7 @@ def err(message):
 
 def get_queue_length(sonos):
     """ Helper function for queue related functions """
-    return len(sonos.get_queue())
+    return len(get_coordinator(sonos).get_queue())
 
 
 def is_index_in_queue(index, queue_length):
