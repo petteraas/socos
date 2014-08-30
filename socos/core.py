@@ -251,10 +251,10 @@ def play_index(sonos, index):
     if is_index_in_queue(index, queue_length):
         # Translate from socos one-based to SoCo zero-based
         index -= 1
-        position = sonos.get_current_track_info()['playlist_position']
+        position = get_coordinator(sonos).get_current_track_info()['playlist_position']
         current = int(position) - 1
         if index != current:
-            return sonos.play_from_queue(index)
+            return get_coordinator(sonos).play_from_queue(index)
     else:
         error = "Index %d is not within range 1 - %d" % (index, queue_length)
         raise ValueError(error)
