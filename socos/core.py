@@ -196,13 +196,14 @@ def get_current_track_info(sonos):
 
 def get_queue(sonos):
     """ Show the current queue """
-    queue = get_coordinator(sonos).get_queue()
+    device = get_coordinator(sonos)
+    queue = device.get_queue()
 
     # pylint: disable=invalid-name
     ANSI_BOLD = '\033[1m'
     ANSI_RESET = '\033[0m'
 
-    current = int(get_coordinator(sonos).get_current_track_info()['playlist_position'])
+    current = int(device.get_current_track_info()['playlist_position'])
 
     queue_length = len(queue)
     padding = len(str(queue_length))
@@ -248,13 +249,15 @@ def play_index(sonos, index):
     index = int(index)
     queue_length = get_queue_length(sonos)
 
+    device = get_coordinator(sonos)
+
     if is_index_in_queue(index, queue_length):
         # Translate from socos one-based to SoCo zero-based
         index -= 1
-        position = get_coordinator(sonos).get_current_track_info()['playlist_position']
+        position = device.get_current_track_info()['playlist_position']
         current = int(position) - 1
         if index != current:
-            return get_coordinator(sonos).play_from_queue(index)
+            return device.play_from_queue(index)
     else:
         error = "Index %d is not within range 1 - %d" % (index, queue_length)
         raise ValueError(error)
@@ -327,6 +330,27 @@ def play(sonos, *args):
     return get_current_track_info(sonos)
 
 
+def pause(sonos):
+    """ Pause """
+    device = get_coordinator(sonos)
+    state = device.get_current_transport_info()['current_transport_state']
+
+    if state == 'PLAYING':
+        device.pause()
+    return get_current_track_info(sonos)
+
+
+def stop(sonos):
+    """ Stop """
+    device = get_coordinator(sonos)
+    state = device.get_current_transport_info()['current_transport_state']
+    states = ['PLAYING', 'PAUSED_PLAYBACK']
+
+    if state in states:
+        device.stop()
+    return get_current_track_info(sonos)
+
+
 def play_mode(sonos, *args):
     """ Change or show the play mode of a device
     Accepted modes: NORMAL, SHUFFLE_NOREPEAT, SHUFFLE, REPEAT_ALL """
@@ -389,7 +413,8 @@ def play_previous(sonos):
 
 def state(sonos):
     """ Get the current state of a device / group """
-    return get_coordinator(sonos).get_current_transport_info()['current_transport_state']
+    device = get_coordinator(sonos)
+    return device.get_current_transport_info()['current_transport_state']
 
 
 def set_speaker(arg):
@@ -420,10 +445,12 @@ def unset_speaker():
 
 
 def get_coordinator(sonos):
+    """ Get the coordinator for commands that can't be executed on a slave """
     if sonos.group:
         return sonos.group.coordinator
     else:
         return sonos
+
 
 def get_help(command=None):
     """ Prints a list of commands with short description """
@@ -461,8 +488,8 @@ COMMANDS = OrderedDict((
     ('partymode',    (True, 'partymode')),
     ('info',         (True, speaker_info)),
     ('play',         (True, play)),
-    ('pause',        (True, 'pause')),
-    ('stop',         (True, 'stop')),
+    ('pause',        (True, pause)),
+    ('stop',         (True, stop)),
     ('next',         (True, play_next)),
     ('previous',     (True, play_previous)),
     ('mode',         (True, play_mode)),
