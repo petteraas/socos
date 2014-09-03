@@ -383,12 +383,13 @@ def remove_range_from_queue(sonos, rem_range):
         remove_index_from_queue(sonos, index)
 
 
+@requires_coordinator
 def remove_index_from_queue(sonos, index):
     """ Remove one track from the queue by its index """
     queue_length = get_queue_length(sonos)
     if is_index_in_queue(index, queue_length):
         index -= 1
-        get_coordinator(sonos).remove_from_queue(index)
+        sonos.remove_from_queue(index)
     else:
         error = "Index %d is not within range 1 - %d" % (index, queue_length)
         raise ValueError(error)
