@@ -195,16 +195,16 @@ def get_current_track_info(sonos):
     )
 
 
+@requires_coordinator
 def get_queue(sonos):
     """ Show the current queue """
-    device = get_coordinator(sonos)
-    queue = device.get_queue()
+    queue = sonos.get_queue()
 
     # pylint: disable=invalid-name
     ANSI_BOLD = '\033[1m'
     ANSI_RESET = '\033[0m'
 
-    current = int(device.get_current_track_info()['playlist_position'])
+    current = int(sonos.get_current_track_info()['playlist_position'])
 
     queue_length = len(queue)
     padding = len(str(queue_length))
