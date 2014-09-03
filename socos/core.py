@@ -353,11 +353,10 @@ def stop(sonos):
     return get_current_track_info(sonos)
 
 
+@requires_coordinator
 def play_mode(sonos, *args):
     """ Change or show the play mode of a device
     Accepted modes: NORMAL, SHUFFLE_NOREPEAT, SHUFFLE, REPEAT_ALL """
-    sonos = get_coordinator(sonos)
-
     if not args:
         return sonos.play_mode
 
