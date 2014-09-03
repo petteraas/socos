@@ -32,7 +32,7 @@ from soco.exceptions import SoCoUPnPException
 
 from .exceptions import SoCoIllegalSeekException, SocosException
 from .music_lib import MusicLibrary
-from .utils import parse_range
+from .utils import parse_range, requires_coordinator
 from . import mixer
 
 # current speaker (used only in interactive mode)
@@ -179,9 +179,10 @@ def complete_command(text, context):
     return matches[context]
 
 
+@requires_coordinator
 def get_current_track_info(sonos):
     """ Show the current track """
-    track = get_coordinator(sonos).get_current_track_info()
+    track = sonos.get_current_track_info()
     return (
         "Current track: %s - %s. From album %s. This is track number"
         " %s in the playlist. It is %s minutes long." % (
