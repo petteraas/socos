@@ -415,10 +415,10 @@ def play_previous(sonos):
     return get_current_track_info(sonos)
 
 
+@requires_coordinator
 def state(sonos):
     """ Get the current state of a device / group """
-    device = get_coordinator(sonos)
-    return device.get_current_transport_info()['current_transport_state']
+    return sonos.get_current_transport_info()['current_transport_state']
 
 
 def set_speaker(arg):
