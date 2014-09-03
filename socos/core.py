@@ -320,14 +320,14 @@ def exit_shell():
     """ Exit socos """
     sys.exit(0)
 
-
+@requires_coordinator
 def play(sonos, *args):
     """ Start playing """
     if args:
         idx = args[0]
         play_index(sonos, idx)
     else:
-        get_coordinator(sonos).play()
+        sonos.play()
     return get_current_track_info(sonos)
 
 
