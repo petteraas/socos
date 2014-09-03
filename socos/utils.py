@@ -47,6 +47,12 @@ def requires_coordinator(func):
     """
     @wraps(func)
     def decorated(*args, **kwargs):
+        """
+        Wrap a function, find the sonos argument to it
+        and turn it into a sonos.group.coordinator
+        before running the original function
+        """
+
         argspec = getargspec(func)
         sonos = args[argspec.args.index('sonos')]
 
