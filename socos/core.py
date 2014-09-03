@@ -341,14 +341,15 @@ def pause(sonos):
     return get_current_track_info(sonos)
 
 
+@requires_coordinator
 def stop(sonos):
     """ Stop """
-    device = get_coordinator(sonos)
-    state = device.get_current_transport_info()['current_transport_state']
+    current_state = sonos.get_current_track_info()['current_transport_state']
+
     states = ['PLAYING', 'PAUSED_PLAYBACK']
 
-    if state in states:
-        device.stop()
+    if current_state in states:
+        sonos.stop()
     return get_current_track_info(sonos)
 
 
