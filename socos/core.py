@@ -233,9 +233,10 @@ def err(message):
     print(message, file=sys.stderr)
 
 
+@requires_coordinator
 def get_queue_length(sonos):
     """ Helper function for queue related functions """
-    return len(get_coordinator(sonos).get_queue())
+    return len(sonos.get_queue())
 
 
 def is_index_in_queue(index, queue_length):
