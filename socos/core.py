@@ -320,6 +320,7 @@ def exit_shell():
     """ Exit socos """
     sys.exit(0)
 
+
 @requires_coordinator
 def play(sonos, *args):
     """ Start playing """
@@ -334,9 +335,7 @@ def play(sonos, *args):
 @requires_coordinator
 def pause(sonos):
     """ Pause """
-    current_state = sonos.get_current_transport_info()['current_transport_state']
-
-    if current_state == 'PLAYING':
+    if state(sonos) == 'PLAYING':
         sonos.pause()
     return get_current_track_info(sonos)
 
@@ -344,11 +343,9 @@ def pause(sonos):
 @requires_coordinator
 def stop(sonos):
     """ Stop """
-    current_state = sonos.get_current_transport_info()['current_transport_state']
-
     states = ['PLAYING', 'PAUSED_PLAYBACK']
 
-    if current_state in states:
+    if state(sonos) in states:
         sonos.stop()
     return get_current_track_info(sonos)
 
