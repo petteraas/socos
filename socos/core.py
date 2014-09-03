@@ -331,13 +331,13 @@ def play(sonos, *args):
     return get_current_track_info(sonos)
 
 
+@requires_coordinator
 def pause(sonos):
     """ Pause """
-    device = get_coordinator(sonos)
-    state = device.get_current_transport_info()['current_transport_state']
+    current_state = sonos.get_current_track_info()['current_transport_state']
 
-    if state == 'PLAYING':
-        device.pause()
+    if current_state == 'PLAYING':
+        sonos.pause()
     return get_current_track_info(sonos)
 
 
