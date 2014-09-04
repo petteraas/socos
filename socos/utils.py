@@ -61,7 +61,5 @@ def requires_coordinator(func):
         if isinstance(sonos, soco.SoCo):
             args[argspec.args.index('sonos')] = sonos.group.coordinator
 
-        args = tuple(args)
-
         return func(*args, **kwargs)
     return decorated
