@@ -2,7 +2,6 @@
 
 import re
 from functools import wraps
-import soco
 
 # matches single numbers ("123") or ranges ("12..34")
 RANGE_PATTERN = re.compile(r'(\d+)(..(\d+))?')
