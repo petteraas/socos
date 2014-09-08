@@ -1,7 +1,6 @@
 """ various utility functions """
 
 import re
-from inspect import getargspec
 from functools import wraps
 import soco
 
@@ -48,18 +47,17 @@ def requires_coordinator(func):
     @wraps(func)
     def decorated(*args, **kwargs):
         """
-        Wrap a function, find the sonos argument to it
-        and turn it into a sonos.group.coordinator
-        before running the original function
+        Grab sonos from first argument to the original function and turn this
+        into sonos.group.coordinator
+        before returning the decorated function.
         """
 
-        argspec = getargspec(func)
-        sonos = args[argspec.args.index('sonos')]
+        sonos = args[0]
 
         args = list(args)
 
         if isinstance(sonos, soco.SoCo):
-            args[argspec.args.index('sonos')] = sonos.group.coordinator
+            args[0] = sonos.group.coordinator
 
         return func(*args, **kwargs)
     return decorated
