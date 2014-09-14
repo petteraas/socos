@@ -194,6 +194,13 @@ def get_current_track_info(sonos):
         )
     )
 
+@requires_coordinator
+def meta(sonos):
+    response = sonos.avTransport.GetPositionInfo([
+        ('InstanceID', 0),
+        ('Channel', 'Master')
+        ])
+    print(response['TrackMetaData'])
 
 @requires_coordinator
 def get_queue(sonos):
@@ -493,6 +500,7 @@ COMMANDS = OrderedDict((
     ('bass',         (True, bass)),
     ('treble',       (True, treble)),
     ('state',        (True, state)),
+    ('meta',         (True, meta)),
     ('ml_index',     (True, MUSIC_LIB.index)),
     ('ml_tracks',    (True, MUSIC_LIB.tracks)),
     ('ml_albums',    (True, MUSIC_LIB.albums)),
