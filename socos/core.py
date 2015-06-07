@@ -264,7 +264,8 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
     @requires_coordinator
     def get_queue_length(sonos):
         """Return the queue length"""
-        return len(sonos.get_queue())
+        queue = sonos.get_queue()
+        return queue.total_matches
 
     @requires_coordinator
     def play_index(self, sonos, index):
@@ -413,19 +414,19 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         queue = sonos.get_queue()
 
         # pylint: disable=invalid-name
-        ANSI_BOLD = '\033[1m'
-        ANSI_RESET = '\033[0m'
+        ansi_bold = '\033[1m'
+        ansi_reset = '\033[0m'
 
         current = int(sonos.get_current_track_info()['playlist_position'])
 
-        queue_length = len(queue)
+        queue_length = queue.total_matches
         padding = len(str(queue_length))
 
         for idx, track in enumerate(queue, 1):
             if idx == current:
-                color = ANSI_BOLD
+                color = ansi_bold
             else:
-                color = ANSI_RESET
+                color = ansi_reset
 
             idx = str(idx).rjust(padding)
             yield (
@@ -435,7 +436,7 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
                     track.creator,
                     track.title,
                     track.album,
-                    ANSI_RESET,
+                    ansi_reset,
                 )
             )
 

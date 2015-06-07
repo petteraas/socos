@@ -10,8 +10,8 @@ import os
 from collections import OrderedDict
 import sqlite3
 import json
-from soco.data_structures import MLTrack, MLAlbum, MLArtist, MLPlaylist, \
-    MLSonosPlaylist
+from soco.data_structures import DidlMusicTrack, DidlMusicAlbum, \
+    DidlMusicArtist, DidlPlaylistContainer
 from socos.exceptions import SocosException
 
 
@@ -97,13 +97,13 @@ class MusicLibrary(object):
         # For brevity
         get_ml_inf = sonos.get_music_library_information
 
-        total = get_ml_inf(data_type, 0, 1)['total_matches']
+        total = get_ml_inf(data_type, 0, 1).total_matches
         yield 'Adding: {}'.format(data_type)
         count = 0
         while count < total:
             # Get as many matches as the device will give each time
             search = get_ml_inf(data_type, start=count, max_items=1000)
-            for item in search['item_list']:
+            for item in search:
                 # In the database we save a set of text fields and the content
                 # dict as json. See self.index for details on fields.
                 values = [getattr(item, field) for field in
@@ -114,7 +114,7 @@ class MusicLibrary(object):
 
             # Print out status while running because indexing tracks can take a
             # while
-            count += search['number_returned']
+            count += search.number_returned
             yield '{{: >3}}%  {{: >{0}}} out of {{: >{0}}}'\
                 .format(len(str(total)))\
                 .format(count * 100 / total, count, total)
@@ -310,9 +310,11 @@ class MusicLibrary(object):
 
         # The last item in the search is the content dict in json
         item_dict = json.loads(results[number][-1])
-        ml_classes = {'tracks': MLTrack, 'albums': MLAlbum,
-                      'artists': MLArtist, 'playlists': MLPlaylist,
-                      'sonos_playlists': MLSonosPlaylist}
+        ml_classes = {'tracks': DidlMusicTrack,
+                      'albums': DidlMusicAlbum,
+                      'artists': DidlMusicArtist,
+                      'playlists': DidlPlaylistContainer,
+                      'sonos_playlists': DidlPlaylistContainer}
         item = ml_classes[data_type].from_dict(item_dict)
 
         # Save state before queue manipulation
