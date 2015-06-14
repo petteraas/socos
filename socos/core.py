@@ -6,6 +6,7 @@ It also contains all private functions used by the two."""
 from __future__ import print_function
 
 import sys
+import types
 import shlex
 from functools import partial
 from collections import OrderedDict, namedtuple
@@ -165,7 +166,7 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         # process output
         if result is None:
             pass
-        elif not isinstance(result, str):
+        elif isinstance(result, types.GeneratorType):
             try:
                 for line in result:
                     print(line)
