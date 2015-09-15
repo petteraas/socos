@@ -451,6 +451,15 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         return self.get_queue(sonos)
 
     @staticmethod
+    @add_command(only_on_coordinator=True)
+    def get_sonos_playlists(sonos, *args):
+        """ Get a(or all) sonos playlist(s) """
+        for idx, list in enumerate(sonos.get_sonos_playlists(), 1):
+            yield (
+                "%s: %s" % (idx, list.title)
+            )
+
+    @staticmethod
     @add_command()
     def volume(sonos, *args):
         """ Change or show the volume of a device """
