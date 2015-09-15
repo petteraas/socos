@@ -1,4 +1,4 @@
-# pylint: disable=too-many-arguments,duplicate-code,star-args
+# pylint: disable=too-many-arguments,duplicate-code
 
 """The core module exposes the two public functions process_cmd and shell.
 It also contains all private functions used by the two."""
@@ -6,17 +6,9 @@ It also contains all private functions used by the two."""
 from __future__ import print_function
 
 import sys
-import types
 import shlex
 from functools import partial
 from collections import OrderedDict, namedtuple
-
-try:
-    # pylint: disable=import-error
-    import colorama
-except ImportError:
-    # pylint: disable=invalid-name
-    colorama = None
 
 try:
     import readline
@@ -25,19 +17,27 @@ except ImportError:
     readline = None
 
 try:
+    # pylint: disable=import-error
+    import colorama
+except ImportError:
+    # pylint: disable=invalid-name
+    colorama = None
+
+import soco
+from soco.exceptions import SoCoUPnPException
+
+from socos.exceptions import SoCoIllegalSeekException, SocosException
+from socos.utils import parse_range, requires_coordinator
+from socos.music_lib import MusicLibrary
+
+from . import mixer
+
+try:
     # pylint: disable=redefined-builtin,invalid-name,undefined-variable
     input = raw_input
 except NameError:
     # raw_input has been renamed to input in Python 3
     pass
-
-import soco
-from soco.exceptions import SoCoUPnPException
-
-from .exceptions import SoCoIllegalSeekException, SocosException
-from .music_lib import MusicLibrary
-from .utils import parse_range, requires_coordinator
-from . import mixer
 
 
 def err(message):
@@ -166,7 +166,7 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         # process output
         if result is None:
             pass
-        elif isinstance(result, types.GeneratorType):
+        elif not isinstance(result, str):
             try:
                 for line in result:
                     print(line)
@@ -265,8 +265,7 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
     @requires_coordinator
     def get_queue_length(sonos):
         """Return the queue length"""
-        queue = sonos.get_queue()
-        return queue.total_matches
+        return len(sonos.get_queue())
 
     @requires_coordinator
     def play_index(self, sonos, index):
@@ -415,19 +414,19 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         queue = sonos.get_queue()
 
         # pylint: disable=invalid-name
-        ansi_bold = '\033[1m'
-        ansi_reset = '\033[0m'
+        ANSI_BOLD = '\033[1m'
+        ANSI_RESET = '\033[0m'
 
         current = int(sonos.get_current_track_info()['playlist_position'])
 
-        queue_length = queue.total_matches
+        queue_length = len(queue)
         padding = len(str(queue_length))
 
         for idx, track in enumerate(queue, 1):
             if idx == current:
-                color = ansi_bold
+                color = ANSI_BOLD
             else:
-                color = ansi_reset
+                color = ANSI_RESET
 
             idx = str(idx).rjust(padding)
             yield (
@@ -437,7 +436,7 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
                     track.creator,
                     track.title,
                     track.album,
-                    ansi_reset,
+                    ANSI_RESET,
                 )
             )
 
@@ -489,11 +488,11 @@ class SoCos(object):  # pylint: disable=too-many-public-methods
         """ Get the current state of a device / group """
         return sonos.get_current_transport_info()['current_transport_state']
 
-    # Add music service commands
-    for method_name in ['index', 'tracks', 'albums', 'artists', 'playlists',
+    # Add music library commands
+    for method_name in ['tracks', 'albums', 'artists', 'playlists',
                         'sonos_playlists']:
         command_list.append(
-            CommandSpec(requires_ip=True, command_name='ml_' + method_name,
+            CommandSpec(requires_ip=True, command_name=method_name,
                         obj_name='music_lib', method_name=method_name)
         )
 
