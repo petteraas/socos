@@ -1,4 +1,4 @@
 flake8
-pylint==1.5.5
+pylint==4.0.9
 astroid==1.4.5
 rstcheck==1.5.1
